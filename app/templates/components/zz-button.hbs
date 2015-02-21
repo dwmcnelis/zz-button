@@ -1,0 +1,9 @@
+{{! app/templates/zz-button.hbs }}
+{{#if iconClass}}
+    <i {{bind-attr class=iconClass}}></i>
+{{/if}}
+{{#if labelContent}}
+  {{labelContent}}
+{{else}}
+  {{yield}}
+{{/if}}
