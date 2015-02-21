@@ -1,7 +1,7 @@
 {
   "name": "zz-button",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.1.0",
+  "description": "A smart button with styling, icons and async support for Ember.js.",
   "directories": {
     "doc": "doc",
     "test": "tests"

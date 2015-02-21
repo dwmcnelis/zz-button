@@ -1,25 +1,31 @@
 # Zz-button
 
-This README outlines the details of collaborating on this Ember addon.
+A smart button with styling, icons and async support for Ember.js
 
 ## Installation
+
+```bash
+npm install --save-dev zz-button
+```
+
+For usage info, please see
+
+## Development
 
 * `git clone` this repository
 * `npm install`
 * `bower install`
 
-## Running
+### Running
 
 * `ember server`
 * Visit your app at http://localhost:4200.
 
-## Running Tests
+### Running Tests
 
 * `ember test`
 * `ember test --server`
 
-## Building
+### Building
 
 * `ember build`
-
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
