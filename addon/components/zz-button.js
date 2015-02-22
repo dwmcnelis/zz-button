@@ -227,8 +227,8 @@ export default Ember.Component.extend({
   // @private
   //
   onClick: (function() {
+    var delay = this.laterDelay();
     this.sendAction('on-click', (function(_this) {
-      var delay = _this.laterDelay();
       if (delay > 0) {
         return Ember.run.later(function() {
           return function(promise) {
