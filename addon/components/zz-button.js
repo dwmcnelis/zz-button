@@ -144,9 +144,10 @@ export default Ember.Component.extend({
   // @returns  {Ember.String} Defaults to "btn-default"
   //
   themeClass: (function() {
-    return 'btn-' + this.get('theme');
+    var theme = this.get('theme');
+    return !Ember.isEmpty(theme) ? 'btn-'+theme : null;
   }).property('theme'),
-
+  
   // Converted size string to Bootstrap button class
   //
   // @function sizeClass
