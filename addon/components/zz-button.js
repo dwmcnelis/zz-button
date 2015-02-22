@@ -101,6 +101,14 @@ export default Ember.Component.extend({
   //
   icon: null,
 
+  // The delay addded before firing async button.
+  //
+  // @property {Ember.Integer} delay
+  // @default  250
+  // @public
+  //
+  delay: 250,
+
   // The valid statuses of button status.
   //
   // @property statuses
@@ -135,9 +143,9 @@ export default Ember.Component.extend({
   // @observes theme
   // @returns  {Ember.String} Defaults to "btn-default"
   //
-  themeClass: function() {
+  themeClass: (function() {
     return 'btn-' + this.get('theme');
-  }.property('theme'),
+  }).property('theme'),
 
   // Converted size string to Bootstrap button class
   //
@@ -145,7 +153,7 @@ export default Ember.Component.extend({
   // @observes size
   // @returns  {Ember.String} Defaults to undefined
   //
-  sizeClass: function() {
+  sizeClass: (function() {
     var size = this.get('size');
     var sizeClass;
 
@@ -168,7 +176,7 @@ export default Ember.Component.extend({
     }
 
     return sizeClass;
-  }.property('size'),
+  }).property('size'),
 
   // Converted icon string to Bootstrap button class
   //
@@ -194,6 +202,22 @@ export default Ember.Component.extend({
     return this.getWithDefault(propName, this.get('label'));
   }).property('status', 'label', 'label-pending', 'label-fulfilled', 'label-rejected','statuses'),
 
+  // The later delay for the button, calculated according to the status of the button
+  // See the `status` property documentation for more info.
+  //
+  // @function laterDelay
+  // @observes status, label-pending, label-fulfilled, label-rejected, icon-pending, icon-fulfilled, icon-rejected
+  // @public
+  //
+  laterDelay: (function() {
+    return ((!Ember.isEmpty(this.get('label-pending')) || 
+              !Ember.isEmpty(this.get('label-fulfilled')) || 
+              !Ember.isEmpty(this.get('label-rejected')) || 
+              !Ember.isEmpty(this.get('icon-pending')) || 
+              !Ember.isEmpty(this.get('icon-fulfilled')) || 
+              !Ember.isEmpty(this.get('icon-rejected'))) ? self.get('delay') : 0); 
+  }).property('label-pending', 'label-fulfilled', 'label-rejected', 'icon-pending', 'icon-fulfilled', 'icon-rejected'),
+
   // Triggered when the button is clicked
   // Invoke the action name on the controller defined in the `action` property, default is `onClick`.
   // The action on the controller recieves a property that should be set to the promise being invoked (if there is one)
@@ -204,10 +228,20 @@ export default Ember.Component.extend({
   //
   onClick: (function() {
     this.sendAction('on-click', (function(_this) {
-      return function(promise) {
-        _this.set('promise', promise);
-        return _this.set('status', 'pending');
-      };
+      var delay = _this.laterDelay();
+      if (delay > 0) {
+        return Ember.run.later(function() {
+          return function(promise) {
+            _this.set('promise', promise);
+            return _this.set('status', 'pending');
+          };
+        }, delay);
+      } else {
+          return function(promise) {
+            _this.set('promise', promise);
+            return _this.set('status', 'pending');
+          };        
+      }
     })(this));
     return false;
   }).on('click'),
