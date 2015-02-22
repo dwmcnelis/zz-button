@@ -124,7 +124,7 @@ export default Ember.Component.extend({
     return !this.get('enabled') || this.get('status') === 'pending';
   }).property('enabled', 'status'),
 
-  // Set by the `onClick` callback, if set, the promise will be observed and the button's status will be
+  // Set by the `click` callback, if set, the promise will be observed and the button's status will be
   // changed accordingly.
   // @property promise
   // @private
@@ -215,7 +215,7 @@ export default Ember.Component.extend({
               !Ember.isEmpty(this.get('label-rejected')) || 
               !Ember.isEmpty(this.get('icon-pending')) || 
               !Ember.isEmpty(this.get('icon-fulfilled')) || 
-              !Ember.isEmpty(this.get('icon-rejected'))) ? self.get('delay') : 0); 
+              !Ember.isEmpty(this.get('icon-rejected'))) ? this.get('delay') : 0); 
   }).property('label-pending', 'label-fulfilled', 'label-rejected', 'icon-pending', 'icon-fulfilled', 'icon-rejected'),
 
   // Triggered when the button is clicked
@@ -226,33 +226,28 @@ export default Ember.Component.extend({
   // @function onClick
   // @private
   //
-  onClick: (function() {
-    var delay = this.laterDelay();
-    this.sendAction('on-click', (function(_this) {
-      if (delay > 0) {
-        return Ember.run.later(function() {
-          return function(promise) {
-            _this.set('promise', promise);
-            return _this.set('status', 'pending');
-          };
-        }, delay);
-      } else {
-          return function(promise) {
-            _this.set('promise', promise);
-            return _this.set('status', 'pending');
-          };        
-      }
-    })(this));
-    return false;
-  }).on('click'),
+  click: (function() {
+    var _this = this;
+    _this.set('status', 'pending');
+    return Ember.run.later(function() {
+      _this.sendAction('on-click', (function(_this) {
+        return function(promise) {
+          _this.set('promise', promise);
+          return;
+        };
+      })(_this));
 
-  // Observes the promise property
+    }, this.get('laterDelay'));
+    return false;
+  }),
+
+  // Observes the action promise property and restores button status
   //
-  // @function changeStatusByPromise
+  // @function handlePromise
   // @observes promise
   // @private
   //
-  changeStatusByPromise: (function() {
+  handlePromise: (function() {
     return this.get('promise').then((function(_this) {
       return function() {
         return _this.set('status', 'fulfilled');
