@@ -5,7 +5,7 @@ A smart button with styling, icons and async support for Ember.js
 ## Installation
 
 ```bash
-npm install --save-dev zz-button
+npm install --save-dev git+https://git@github.com:dwmcnelis/zz-button.git
 ```
 
 For usage info, please see

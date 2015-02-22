@@ -1,6 +1,6 @@
 {
   "name": "zz-button",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A smart button with styling, icons and async support for Ember.js.",
   "directories": {
     "doc": "doc",

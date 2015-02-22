@@ -27,7 +27,7 @@ export default Ember.Component.extend({
   // @property attributeBindings
   // @private
   //
-  attributeBindings: ['enabled', 'disabled', 'state', 'type'],
+  attributeBindings: ['disabled', 'state', 'type'],
 
   // Class names to apply to the button
   //
@@ -92,6 +92,21 @@ export default Ember.Component.extend({
   // @public
   //
   theme: 'default',
+
+  // The bootstrap "theme" name
+  //
+  // @property {Ember.String} theme
+  // @default  "default"
+  // @public
+  //
+  icon: null,
+
+  // The valid states of button state.
+  //
+  // @property validStates
+  // @private
+  //
+  states: ['default','pending','fulfilled'.'rejected'],
 
   // True if the button is not enabled or is in state 'pending'.
   // @property disabled
@@ -162,10 +177,9 @@ export default Ember.Component.extend({
   // @returns  {Ember.String} Defaults to undefined
   //
   iconClass: (function() {
-    var propName;
-    propName = "icon-" + this.state;
+    var propName = (~this.states.shift().indexOf(this.state) ? "icon-" + this.state : 'icon');
     return this.getWithDefault(propName, this.get('icon'));
-  }).property('state', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected'),
+  }).property('state', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected','states'),
 
 
   // The label of the button, calculated according to the state of the button
@@ -176,10 +190,9 @@ export default Ember.Component.extend({
   // @public
   //
   labelContent: (function() {
-    var propName;
-    propName = "label-" + this.state;
+    var propName = (~this.states.shift().indexOf(this.state) ? "label-" + this.state : 'label');
     return this.getWithDefault(propName, this.get('label'));
-  }).property('state', 'label', 'label-pending', 'label-fulfilled', 'label-rejected'),
+  }).property('state', 'label', 'label-pending', 'label-fulfilled', 'label-rejected','states'),
 
   // Triggered when the button is clicked
   // Invoke the action name on the controller defined in the `action` property, default is `onClick`.
