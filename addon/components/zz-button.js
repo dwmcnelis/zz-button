@@ -27,7 +27,7 @@ export default Ember.Component.extend({
   // @property attributeBindings
   // @private
   //
-  attributeBindings: ['disabled', 'state', 'type'],
+  attributeBindings: ['disabled', 'status', 'type'],
 
   // Class names to apply to the button
   //
@@ -46,22 +46,22 @@ export default Ember.Component.extend({
   enabled: true,
 
 
-  // The state of the button, can be one of the following:
+  // The status of the button, can be one of the following:
   // default - The button is enabled and ready to be clicked.
   // pending - The promise bound to the button was sent and the promise is still pending
   // fulfilled - The promise was fulfilled properly.
   // rejected - The promise bound to the button was finished as rejected.
   //
-  // The state is also bound to the DOM as `state` property, this allows to easily change styles for every
-  // state by using `.em-button[state=fulfilled]` syntax.
+  // The status is also bound to the DOM as `status` property, this allows to easily change styles for every
+  // status by using `.em-button[status=fulfilled]` syntax.
   //
   // The label of the button will change to the value of the component properties that correspond to the
-  // states mentioned above.
+  // statuses mentioned above.
   //
-  // @property state
+  // @property status
   // @private
   //
-  state: 'default',
+  status: 'default',
 
   //--------------------------------------------------------------------------------
   // Actions
@@ -101,22 +101,22 @@ export default Ember.Component.extend({
   //
   icon: null,
 
-  // The valid states of button state.
+  // The valid statuses of button status.
   //
-  // @property validStates
+  // @property statuses
   // @private
   //
-  states: ['default','pending','fulfilled','rejected'],
+  statuses: ['default','pending','fulfilled','rejected'],
 
-  // True if the button is not enabled or is in state 'pending'.
+  // True if the button is not enabled or is in status 'pending'.
   // @property disabled
   // @public
   //
   disabled: (function() {
-    return !this.get('enabled') || this.get('state') === 'pending';
-  }).property('enabled', 'state'),
+    return !this.get('enabled') || this.get('status') === 'pending';
+  }).property('enabled', 'status'),
 
-  // Set by the `onClick` callback, if set, the promise will be observed and the button's state will be
+  // Set by the `onClick` callback, if set, the promise will be observed and the button's status will be
   // changed accordingly.
   // @property promise
   // @private
@@ -173,31 +173,31 @@ export default Ember.Component.extend({
   // Converted icon string to Bootstrap button class
   //
   // @function iconClass
-  // @observes state, icon, icon-pending, icon-fulfilled, icon-rejected
+  // @observes status, icon, icon-pending, icon-fulfilled, icon-rejected
   // @returns  {Ember.String} Defaults to undefined
   //
   iconClass: (function() {
-    var propName = (~this.states.shift().indexOf(this.state) ? "icon-" + this.state : 'icon');
+    var propName = (~this.statuses.shift().indexOf(this.status) ? "icon-" + this.status : 'icon');
     return this.getWithDefault(propName, this.get('icon'));
-  }).property('state', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected','states'),
+  }).property('status', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected','statuses'),
 
 
-  // The label of the button, calculated according to the state of the button
-  // See the `state` property documentation for more info.
+  // The label of the button, calculated according to the status of the button
+  // See the `status` property documentation for more info.
   //
   // @function labelContent
-  // @observes state, label, label-pending, label-fulfilled, label-rejected
+  // @observes status, label, label-pending, label-fulfilled, label-rejected
   // @public
   //
   labelContent: (function() {
-    var propName = (~this.states.shift().indexOf(this.state) ? "label-" + this.state : 'label');
+    var propName = (~this.statuses.shift().indexOf(this.status) ? "label-" + this.status : 'label');
     return this.getWithDefault(propName, this.get('label'));
-  }).property('state', 'label', 'label-pending', 'label-fulfilled', 'label-rejected','states'),
+  }).property('status', 'label', 'label-pending', 'label-fulfilled', 'label-rejected','statuses'),
 
   // Triggered when the button is clicked
   // Invoke the action name on the controller defined in the `action` property, default is `onClick`.
   // The action on the controller recieves a property that should be set to the promise being invoked (if there is one)
-  // If a promise was set, the button will move to 'pending' state until the promise will be fulfilled
+  // If a promise was set, the button will move to 'pending' status until the promise will be fulfilled
   //
   // @function onClick
   // @private
@@ -206,7 +206,7 @@ export default Ember.Component.extend({
     this.sendAction('on-click', (function(_this) {
       return function(promise) {
         _this.set('promise', promise);
-        return _this.set('state', 'pending');
+        return _this.set('status', 'pending');
       };
     })(this));
     return false;
@@ -214,18 +214,18 @@ export default Ember.Component.extend({
 
   // Observes the promise property
   //
-  // @function changeStateByPromise
+  // @function changeStatusByPromise
   // @observes promise
   // @private
   //
-  changeStateByPromise: (function() {
+  changeStatusByPromise: (function() {
     return this.get('promise').then((function(_this) {
       return function() {
-        return _this.set('state', 'fulfilled');
+        return _this.set('status', 'fulfilled');
       };
     })(this), (function(_this) {
       return function(err) {
-        _this.set('state', 'rejected');
+        _this.set('status', 'rejected');
         return _this.set('error', err);
       };
     })(this));
