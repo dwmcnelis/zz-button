@@ -106,7 +106,7 @@ export default Ember.Component.extend({
   // @property validStates
   // @private
   //
-  states: ['default','pending','fulfilled'.'rejected'],
+  states: ['default','pending','fulfilled','rejected'],
 
   // True if the button is not enabled or is in state 'pending'.
   // @property disabled
