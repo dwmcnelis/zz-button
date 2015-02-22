@@ -177,7 +177,7 @@ export default Ember.Component.extend({
   // @returns  {Ember.String} Defaults to undefined
   //
   iconClass: (function() {
-    var propName = (~this.statuses.shift().indexOf(this.status) ? "icon-" + this.status : 'icon');
+    var propName = (~this.statuses.indexOf(this.status) ? "icon-" + this.status : 'icon');
     return this.getWithDefault(propName, this.get('icon'));
   }).property('status', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected','statuses'),
 
@@ -190,7 +190,7 @@ export default Ember.Component.extend({
   // @public
   //
   labelContent: (function() {
-    var propName = (~this.statuses.shift().indexOf(this.status) ? "label-" + this.status : 'label');
+    var propName = (~this.statuses.indexOf(this.status) ? "label-" + this.status : 'label');
     return this.getWithDefault(propName, this.get('label'));
   }).property('status', 'label', 'label-pending', 'label-fulfilled', 'label-rejected','statuses'),
 
