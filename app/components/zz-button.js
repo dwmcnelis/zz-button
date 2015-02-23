@@ -6,6 +6,6 @@
 // @class  zz-button
 //
 
-import ZzButton from 'zz-button/components/zz-button';
+import ZzButtonComponent from 'zz-button/components/zz-button';
 
-export default ZzButton;
+export default ZzButtonComponent;

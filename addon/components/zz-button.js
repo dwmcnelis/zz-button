@@ -66,11 +66,11 @@ export default Ember.Component.extend({
   //--------------------------------------------------------------------------------
   // Actions
 
-  // The action name to invoke on the controller when the button is clicked.
-  // @property on-click
+  // The action name to send to the controller when the button is clicked.
+  // @property action
   // @public
   //
-  'on-click': void 0,
+  'action': void 0,
 
   //--------------------------------------------------------------------------------
   // Events
@@ -231,7 +231,7 @@ export default Ember.Component.extend({
     var _this = this;
     _this.set('status', 'pending');
     return Ember.run.later(function() {
-      _this.sendAction('on-click', (function(_this) {
+      _this.get('targetObject').send(_this.get('action'), (function(_this) {
         return function(promise) {
           _this.set('promise', promise);
           return;
