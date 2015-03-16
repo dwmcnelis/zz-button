@@ -1,4 +1,4 @@
-// addon/components/zz-button.js
+// addon/components/zz_button.js
 
 import Ember from 'ember';
 
@@ -9,12 +9,6 @@ import Ember from 'ember';
 //
 
 export default Ember.Component.extend({
-
-  //--------------------------------------------------------------------------------
-  // Dependencies
-
-  //--------------------------------------------------------------------------------
-  // Attributes
 
   // The root component element
   //
@@ -37,14 +31,21 @@ export default Ember.Component.extend({
 
   // Bind the specified properties as the classes of the DOM element.
   //
-  classNameBindings: ['themeClass', 'sizeClass'],
+  classNameBindings: ['kindClass', 'sizeClass', 'extraClasses'],
+
+  // Extra css classes 
+  //
+  // @property {Ember.String}
+  // @default  null
+  // @public
+  //
+  extraClasses: null,
 
   // True if the button is enabled and can be clicked.
   // @property enabled
   // @public
   //
   enabled: true,
-
 
   // The status of the button, can be one of the following:
   // default - The button is enabled and ready to be clicked.
@@ -53,7 +54,7 @@ export default Ember.Component.extend({
   // rejected - The promise bound to the button was finished as rejected.
   //
   // The status is also bound to the DOM as `status` property, this allows to easily change styles for every
-  // status by using `.em-button[status=fulfilled]` syntax.
+  // status by using `.zz-button[status=fulfilled]` syntax.
   //
   // The label of the button will change to the value of the component properties that correspond to the
   // statuses mentioned above.
@@ -63,20 +64,11 @@ export default Ember.Component.extend({
   //
   status: 'default',
 
-  //--------------------------------------------------------------------------------
-  // Actions
-
   // The action name to send to the controller when the button is clicked.
   // @property action
   // @public
   //
   'action': void 0,
-
-  //--------------------------------------------------------------------------------
-  // Events
-
-  //--------------------------------------------------------------------------------
-  // Properties
 
   // The size of the button
   //
@@ -85,18 +77,18 @@ export default Ember.Component.extend({
   //
   size: 'medium',
 
-  // The bootstrap "theme" name
+  // The visual "kind" of button
   //
-  // @property {Ember.String} theme
+  // @property {Ember.String} kind
   // @default  "default"
   // @public
   //
-  theme: 'default',
+  kind: 'default',
 
-  // The bootstrap "theme" name
+  // Icon classes (if any)
   //
-  // @property {Ember.String} theme
-  // @default  "default"
+  // @property {Ember.String} icon
+  // @default  null
   // @public
   //
   icon: null,
@@ -117,7 +109,7 @@ export default Ember.Component.extend({
   statuses: ['default','pending','fulfilled','rejected'],
 
   // True if the button is not enabled or is in status 'pending'.
-  // @property disabled
+  // @function disabled
   // @public
   //
   disabled: (function() {
@@ -131,22 +123,16 @@ export default Ember.Component.extend({
   //
   promise: void 0,
 
-  //--------------------------------------------------------------------------------
-  // Observers
-
-  //--------------------------------------------------------------------------------
-  // Methods
-
-  // Converted theme string to Bootstrap button class
+  // Convert kind to button kind class
   //
-  // @function themeClass
-  // @observes theme
+  // @function kindClass
+  // @observes kind
   // @returns  {Ember.String} Defaults to "btn-default"
   //
-  themeClass: (function() {
-    var theme = this.get('theme');
-    return !Ember.isEmpty(theme) ? 'btn-'+theme : null;
-  }).property('theme'),
+  kindClass: (function() {
+    var kind = this.get('kind');
+    return !Ember.isEmpty(kind) ? 'btn-'+kind : null;
+  }).property('kind'),
   
   // Converted size string to Bootstrap button class
   //
@@ -190,7 +176,6 @@ export default Ember.Component.extend({
     return this.getWithDefault(propName, this.get('icon'));
   }).property('status', 'icon', 'icon-pending', 'icon-fulfilled', 'icon-rejected','statuses'),
 
-
   // The label of the button, calculated according to the status of the button
   // See the `status` property documentation for more info.
   //
@@ -228,17 +213,21 @@ export default Ember.Component.extend({
   // @private
   //
   click: (function() {
-    var _this = this;
-    _this.set('status', 'pending');
-    return Ember.run.later(function() {
-      _this.get('targetObject').send(_this.get('action'), (function(_this) {
-        return function(promise) {
-          _this.set('promise', promise);
-          return;
-        };
-      })(_this));
+    var action = this.get('action');
 
-    }, this.get('laterDelay'));
+    if (!Ember.isEmpty(action)) {
+      var _this = this;
+     _this.set('status', 'pending');
+      return Ember.run.later(function() {
+        _this.get('targetObject').send(action, (function(_this) {
+          return function(promise) {
+            _this.set('promise', promise);
+            return;
+          };
+        })(_this));
+
+      }, this.get('laterDelay'));
+    }
     return false;
   }),
 
